@@ -1,18 +1,15 @@
 {
-  "name": "nodejs",
+  "name": "bewerbungsagent",
   "version": "1.0.0",
-  "description": "",
+  "description": "KI-gestützter Bewerbungsgenerator",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@types/node": "^22.13.11",
     "axios": "^1.8.4",
     "body-parser": "^2.2.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "cors": "^2.8.5"
   }
 }
