@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bewerbungsgenerator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-gray: #ecf0f1;
+            --dark-gray: #7f8c8d;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--secondary-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        h1 {
+            color: var(--secondary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            color: var(--dark-gray);
+            font-size: 1.2rem;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .main-content {
+                flex-direction: row;
+            }
+        }
+        
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+        
+        .result-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            display: none;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .download-btn {
+            background-color: var(--accent-color);
+        }
+        
+        .download-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        #applicationOutput {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+        
+        .letterhead {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        
+        .contact-info {
+            text-align: right;
+        }
+        
+        .date {
+            margin: 20px 0;
+        }
+        
+        .subject {
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .greeting, .closing {
+            margin: 20px 0;
+        }
+        
+        .signature {
+            margin-top: 30px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loader::after {
+            content: "";
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            #applicationOutput, #applicationOutput * {
+                visibility: visible;
+            }
+            
+            #applicationOutput {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bewerbungsgenerator</h1>
+            <p class="tagline">Erstelle professionelle Bewerbungsschreiben in wenigen Minuten</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="form-container">
+                <h2>Deine Bewerbungsdaten</h2>
+                <div id="errorAlert" class="alert"></div>
+                
+                <form id="applicationForm">
+                    <div class="form-group">
+                        <label for="firstName">Vorname</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName">Nachname</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">E-Mail</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Telefon</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Anschrift</label>
+                        <textarea id="address" name="address" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="job">Angestrebte Position/Beruf</label>
+                        <input type="text" id="job" name="job" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="experience">Berufserfahrung</label>
+                        <textarea id="experience" name="experience" placeholder="Beschreibe deine relevante Berufserfahrung" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="strengths">Stärken & Fähigkeiten</label>
+                        <textarea id="strengths" name="strengths" placeholder="Liste deine wichtigsten Stärken und Fähigkeiten auf" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="education">Ausbildung</label>
+                        <textarea id="education" name="education" placeholder="Beschreibe deine Ausbildung und Qualifikationen" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="languages">Sprachkenntnisse</label>
+                        <textarea id="languages" name="languages" placeholder="Liste deine Sprachkenntnisse mit Niveaustufen auf" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="motivation">Motivation</label>
+                        <textarea id="motivation" name="motivation" placeholder="Warum bist du für diese Position geeignet und motiviert?" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="style">Bewerbungsstil</label>
+                        <select id="style" name="style">
+                            <option value="formal">Formell</option>
+                            <option value="creative">Kreativ</option>
+                            <option value="casual">Locker</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" id="generateBtn">Bewerbung generieren</button>
+                </form>
+                
+                <div class="loader" id="loader"></div>
+            </div>
+            
+            <div class="result-container" id="resultContainer">
+                <h2>Deine Bewerbung</h2>
+                
+                <div id="applicationOutput"></div>
+                
+                <div class="buttons">
+                    <button id="downloadPdfBtn" class="download-btn">Als PDF herunterladen</button>
+                    <button id="newApplicationBtn">Neue Bewerbung erstellen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const applicationForm = document.getElementById('applicationForm');
+            const resultContainer = document.getElementById('resultContainer');
+            const applicationOutput = document.getElementById('applicationOutput');
+            const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+            const newApplicationBtn = document.getElementById('newApplicationBtn');
+            const loader = document.getElementById('loader');
+            const errorAlert = document.getElementById('errorAlert');
+            const formContainer = document.querySelector('.form-container');
+            
+            applicationForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                errorAlert.style.display = 'none';
+                loader.style.display = 'block';
+                
+                const formData = new FormData(applicationForm);
+                const formDataObj = {};
+                
+                formData.forEach((value, key) => {
+                    formDataObj[key] = value;
+                });
+                
+                try {
+                    const response = await fetch('http://localhost:3000/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formDataObj)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Fehler bei der Anfrage');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    applicationOutput.innerHTML = data.application;
+                    loader.style.display = 'none';
+                    formContainer.style.display = 'none';
+                    resultContainer.style.display = 'block';
+                } catch (error) {
+                    loader.style.display = 'none';
+                    errorAlert.textContent = 'Es gab einen Fehler: ' + error.message;
+                    errorAlert.style.display = 'block';
+                }
+            });
+            
+            downloadPdfBtn.addEventListener('click', function() {
+                const { jsPDF } = window.jspdf;
+                
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const element = applicationOutput;
+                
+                html2canvas(element).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = 210 - 40; // A4 width in mm minus margins
+                    const pageHeight = 297;  // A4 height in mm
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    let heightLeft = imgHeight;
+                    
+                    let position = 20; // starting at y = 20 mm for top margin
+                    
+                    doc.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight - 40; // 40 mm for top and bottom margins
+                    
+                    while (heightLeft > 0) {
+                        position = 20 - heightLeft;
+                        doc.addPage();
+                        doc.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight - 40;
+                    }
+                    
+                    doc.save('bewerbung.pdf');
+                });
+            });
+            
+            newApplicationBtn.addEventListener('click', function() {
+                formContainer.style.display = 'block';
+                resultContainer.style.display = 'none';
+                applicationForm.reset();
+            });
+        });
+    </script>
+</body>
+</html>
