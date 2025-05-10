@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 });
 
 // OpenRouter API-Key
-const API_KEY = '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';
+const API_KEY = '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';
 
 // POST-Route zur Generierung der Bewerbung
 app.post('/generate', async (req, res) => {
