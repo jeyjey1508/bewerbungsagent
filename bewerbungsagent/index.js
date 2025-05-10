@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // API Key – trage hier deinen gültigen OpenRouter-Key ein
-const API_KEY = 'sk-or-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+const API_KEY = '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';
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
