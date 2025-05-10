@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// API Key – trage hier deinen gültigen OpenRouter-Key ein
+// Fester API-Key direkt im Code (nicht über Umgebungsvariable)
 const API_KEY = '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';
 
 app.get("/", (req, res) => {
@@ -36,6 +36,7 @@ app.post('/generate', async (req, res) => {
       style
     } = req.body;
 
+    // Pflichtfelder prüfen
     if (!firstName || !lastName || !job || !experience || !strengths || !education || !languages || !motivation) {
       return res.status(400).json({ error: 'Alle Pflichtfelder müssen ausgefüllt sein.' });
     }
@@ -85,24 +86,23 @@ Struktur:
 `;
 
     const response = await axios.post(
-  'https://openrouter.ai/api/v1/chat/completions',
-  {
-    model: 'openai/gpt-3.5-turbo',
-    messages: [
-      { role: "system", content: "Du bist ein professioneller Bewerbungsschreiber." },
-      { role: "user", content: prompt }
-    ]
-  },
-  {
-    headers: {
-      'Authorization': `Bearer ${API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://bewerbungsagent.onrender.com',
-      'X-Title': 'Bewerbungsagent'
-    }
-  }
-);
-
+      'https://openrouter.ai/api/v1/chat/completions',
+      {
+        model: 'openai/gpt-3.5-turbo',
+        messages: [
+          { role: "system", content: "Du bist ein professioneller Bewerbungsschreiber." },
+          { role: "user", content: prompt }
+        ]
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://bewerbungsagent.onrender.com',
+          'X-Title': 'Bewerbungsagent'
+        }
+      }
+    );
 
     const formattedApplication = `
       <div class="letterhead">
