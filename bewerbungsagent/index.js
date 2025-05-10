@@ -95,8 +95,11 @@ Struktur:
       },
       {
         headers: {
-          'Authorization': `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json'
+  'Authorization': `Bearer ${API_KEY}`,
+  'Content-Type': 'application/json',
+  'HTTP-Referer': 'https://bewerbungsagent.onrender.com',
+  'X-Title': 'Bewerbungsagent'
+}
         }
       }
     );
