@@ -12,15 +12,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Root Route liefert HTML
+// API Key – trage hier deinen gültigen OpenRouter-Key ein
+const API_KEY = 'sk-or-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// OpenRouter API-Key
-const API_KEY = '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';
-
-// POST-Route zur Generierung der Bewerbung
 app.post('/generate', async (req, res) => {
   try {
     const {
@@ -44,7 +42,6 @@ app.post('/generate', async (req, res) => {
 
     const applicantName = `${firstName} ${lastName}`;
     const applicantContact = `${address}\n${email}\n${phone}`;
-
     const companyName = "Musterfirma GmbH";
     const companyAddress = "Musterstraße 123\n12345 Musterstadt";
     const contactPerson = "Frau Müller";
@@ -58,36 +55,33 @@ app.post('/generate', async (req, res) => {
     }
 
     const prompt = `
-Erstelle ein vollständiges Bewerbungsschreiben ${stylePrompt} nach DIN 5008-Standard. 
+Erstelle ein Bewerbungsschreiben ${stylePrompt} nach DIN 5008:
 
-Bewerber-Informationen:
+Bewerber:
 - Name: ${applicantName}
 - Kontakt: ${applicantContact}
-- Angestrebte Position: ${job}
-- Berufserfahrung: ${experience}
-- Stärken & Fähigkeiten: ${strengths}
+- Beruf: ${job}
+- Erfahrung: ${experience}
+- Stärken: ${strengths}
 - Ausbildung: ${education}
-- Sprachkenntnisse: ${languages}
+- Sprachen: ${languages}
 - Motivation: ${motivation}
 
 Firma:
 - Name: ${companyName}
 - Adresse: ${companyAddress}
-- Kontaktperson: ${contactPerson}
+- Kontakt: ${contactPerson}
 
-Das Bewerbungsschreiben soll folgende Elemente enthalten:
-1. Absenderadresse oben rechts (rechtsbündig)
-2. Empfängeradresse (linksbündig)
-3. Ort und Datum rechts
+Struktur:
+1. Absender (rechts)
+2. Empfänger (links)
+3. Datum (rechts)
 4. Betreffzeile
 5. Anrede
-6. Einleitung mit Bezug zur Position
-7. Hauptteil mit Qualifikationen, Erfahrungen und Stärken
-8. Abschluss mit Gesprächswunsch
-9. Grußformel und Name
-
-Achte auf einen professionellen Ton und vermeide typische Floskeln. Verwende keine Platzhalter, sondern generiere einen vollständigen, individuellen Text.
-Formatiere das Ergebnis mit HTML-Tags für die Anzeige im Browser, einschließlich korrekter Absätze und Formatierung nach DIN 5008.
+6. Einleitung
+7. Hauptteil
+8. Schluss
+9. Grußformel
 `;
 
     const response = await axios.post(
@@ -95,7 +89,7 @@ Formatiere das Ergebnis mit HTML-Tags für die Anzeige im Browser, einschließli
       {
         model: 'openai/gpt-3.5-turbo',
         messages: [
-          { role: "system", content: "Du bist ein professioneller Bewerbungsexperte." },
+          { role: "system", content: "Du bist ein professioneller Bewerbungsschreiber." },
           { role: "user", content: prompt }
         ]
       },
@@ -122,7 +116,7 @@ Formatiere das Ergebnis mit HTML-Tags für die Anzeige im Browser, einschließli
       </div>
       
       <div class="date">
-        Musterstadt, ${new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+        Musterstadt, ${new Date().toLocaleDateString('de-DE')}
       </div>
       
       <div class="subject">
@@ -137,13 +131,15 @@ Formatiere das Ergebnis mit HTML-Tags für die Anzeige im Browser, einschließli
     `;
 
     res.json({ application: formattedApplication });
+
   } catch (error) {
-  console.error('❌ OpenRouter-Fehler:', error.response?.data || error.message);
-  res.status(500).json({
-    error: 'Fehler bei der Bewerbungserstellung: ' + (error.response?.data?.error?.message || error.message),
-  });
-}
+    console.error('❌ OpenRouter-Fehler:', error.response?.data || error.message);
+    res.status(500).json({
+      error: 'Fehler bei der Bewerbungserstellung: ' + (error.response?.data?.error?.message || error.message),
+    });
+  }
+});
 
 app.listen(port, () => {
-  console.log(`Server läuft auf Port ${port}`);
+  console.log(`🚀 Server läuft auf Port ${port}`);
 });
