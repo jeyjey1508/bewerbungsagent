@@ -85,24 +85,24 @@ Struktur:
 `;
 
     const response = await axios.post(
-      'https://openrouter.ai/api/v1/chat/completions',
-      {
-        model: 'openai/gpt-3.5-turbo',
-        messages: [
-          { role: "system", content: "Du bist ein professioneller Bewerbungsschreiber." },
-          { role: "user", content: prompt }
-        ]
-      },
-      {
-        headers: {
-  'Authorization': `Bearer ${API_KEY}`,
-  'Content-Type': 'application/json',
-  'HTTP-Referer': 'https://bewerbungsagent.onrender.com',
-  'X-Title': 'Bewerbungsagent'
-}
-        }
-      }
-    );
+  'https://openrouter.ai/api/v1/chat/completions',
+  {
+    model: 'openai/gpt-3.5-turbo',
+    messages: [
+      { role: "system", content: "Du bist ein professioneller Bewerbungsschreiber." },
+      { role: "user", content: prompt }
+    ]
+  },
+  {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://bewerbungsagent.onrender.com',
+      'X-Title': 'Bewerbungsagent'
+    }
+  }
+);
+
 
     const formattedApplication = `
       <div class="letterhead">
