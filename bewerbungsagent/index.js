@@ -13,6 +13,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Fester API-Key direkt im Code (nicht über Umgebungsvariable)
+console.log('API_KEY:', process.env.OPENROUTER_API_KEY);
+
 const API_KEY = process.env.OPENROUTER_API_KEY;
 
 app.get("/", (req, res) => {
