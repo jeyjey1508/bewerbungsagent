@@ -138,10 +138,11 @@ Formatiere das Ergebnis mit HTML-Tags für die Anzeige im Browser, einschließli
 
     res.json({ application: formattedApplication });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Es gab einen Fehler bei der Erstellung der Bewerbung' });
-  }
-});
+  console.error('❌ OpenRouter-Fehler:', error.response?.data || error.message);
+  res.status(500).json({
+    error: 'Fehler bei der Bewerbungserstellung: ' + (error.response?.data?.error?.message || error.message),
+  });
+}
 
 app.listen(port, () => {
   console.log(`Server läuft auf Port ${port}`);
