@@ -345,17 +345,15 @@
                         </select>
                     </div>
 
-                    <div class="form-group" style="display: flex; align-items: flex-start; gap: 10px;">
-                      <input type="checkbox" id="privacyConsent" required style="transform: scale(1.2); margin-top: 4px;">
-                      <label for="privacyConsent" style="font-weight: bold;">
-                        Ich stimme zu, dass meine Angaben zurx Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.
-                      </label>
-                    </div>
-                    
-                    <div style="margin: 20px 0; border: 2px dashed red; padding: 10px;">
-                      <input type="checkbox" id="privacyConsent" required>
-                      <label for="privacyConsent"><strong>Ich stimme zu</strong></label>
-                    </div>
+                    <div class="form-group">
+                          <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="privacyConsent" required style="appearance: auto; width: 18px; height: 18px;">
+                            <span style="font-weight: bold;">
+                              Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.
+                            </span>
+                          </label>
+                        </div>
+
                    
                     <button type="submit" id="generateBtn">Bewerbung generieren</button>
                 </form>
