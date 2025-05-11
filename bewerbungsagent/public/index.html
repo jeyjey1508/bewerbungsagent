@@ -351,11 +351,17 @@
                     </div>
 
                     <div class="form-group">
-                      <div id="fakeCheckbox" style="display: inline-block; width: 18px; height: 18px; border: 2px solid #2c3e50; margin-right: 10px; cursor: pointer;"></div>
-                      <label for="fakeCheckbox" style="font-weight: bold; display: inline;">
-                        Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.
-                      </label>
+                      <!-- DSGVO + Fehlermeldung direkt darunter -->
+                    <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <div id="fakeCheckbox" style="width: 18px; height: 18px; border: 2px solid #2c3e50; cursor: pointer;"></div>
+                        <label for="fakeCheckbox" style="font-weight: bold;">
+                          Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.
+                        </label>
+                      </div>
+                      <div id="errorAlert" class="alert" style="margin: 0;"></div>
                     </div>
+
                     
                     <!-- ✅ Nur einmal hier – direkt darunter -->
                     <div id="errorAlert" class="alert"></div>
