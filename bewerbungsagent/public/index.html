@@ -289,6 +289,15 @@
           margin-top: 8px;
           display: none;
         }
+        
+        #clearDataBtn {
+            background-color: var(--dark-gray);
+            margin-top: 20px;
+        }
+        
+        #clearDataBtn:hover {
+            background-color: #6c7a7d;
+        }
     </style>
 </head>
 <body>
@@ -381,6 +390,8 @@
                     <button type="submit" id="generateBtn">Bewerbung generieren</button>
                 </form>
                 
+                <button id="clearDataBtn">🧹 Alle Eingaben löschen</button>
+                
                 <div class="loader" id="loader"></div>
             </div>
             
@@ -404,6 +415,7 @@
             const applicationOutput = document.getElementById('applicationOutput');
             const downloadPdfBtn = document.getElementById('downloadPdfBtn');
             const newApplicationBtn = document.getElementById('newApplicationBtn');
+            const clearDataBtn = document.getElementById('clearDataBtn');
             const loader = document.getElementById('loader');
             const errorAlert = document.getElementById('errorAlert');
             const formContainer = document.querySelector('.form-container');
@@ -412,6 +424,18 @@
             let privacyConsentGiven = false;
             const fakeCheckbox = document.getElementById('fakeCheckbox');
             
+            // Lade gespeicherte Daten aus dem localStorage
+            loadFormDataFromLocalStorage();
+            
+            // Füge Event-Listener für alle Eingabefelder hinzu, um Änderungen im localStorage zu speichern
+            const formInputs = applicationForm.querySelectorAll('input, textarea, select');
+            formInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    saveFormDataToLocalStorage();
+                });
+            });
+            
+            // Event-Listener für die DSGVO-Checkbox
             fakeCheckbox.addEventListener('click', function() {
                 privacyConsentGiven = !privacyConsentGiven;
                 fakeCheckbox.style.backgroundColor = privacyConsentGiven ? '#3498db' : 'transparent';
@@ -419,7 +443,42 @@
                     privacyError.style.display = 'none';
                 }
             });
+            
+            // Event-Listener für den "Alle Eingaben löschen"-Button
+            clearDataBtn.addEventListener('click', function() {
+                clearFormData();
+            });
 
+            // Funktion zum Speichern der Formulardaten im localStorage
+            function saveFormDataToLocalStorage() {
+                const formData = {};
+                formInputs.forEach(input => {
+                    formData[input.id] = input.value;
+                });
+                localStorage.setItem('bewerbungsDaten', JSON.stringify(formData));
+            }
+            
+            // Funktion zum Laden gespeicherter Daten aus dem localStorage
+            function loadFormDataFromLocalStorage() {
+                const savedData = localStorage.getItem('bewerbungsDaten');
+                if (savedData) {
+                    const formData = JSON.parse(savedData);
+                    Object.keys(formData).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            element.value = formData[key];
+                        }
+                    });
+                }
+            }
+            
+            // Funktion zum Löschen aller Formulardaten und des localStorage
+            function clearFormData() {
+                applicationForm.reset();
+                localStorage.removeItem('bewerbungsDaten');
+                privacyConsentGiven = false;
+                fakeCheckbox.style.backgroundColor = 'transparent';
+            }
             
             applicationForm.addEventListener('submit', async function(e) {
                 e.preventDefault(); // Seite nicht neu laden!
@@ -501,9 +560,6 @@
             newApplicationBtn.addEventListener('click', function() {
                 formContainer.style.display = 'block';
                 resultContainer.style.display = 'none';
-                applicationForm.reset();
-                privacyConsentGiven = false;
-                fakeCheckbox.style.backgroundColor = 'transparent';
             });
         });
     </script>
