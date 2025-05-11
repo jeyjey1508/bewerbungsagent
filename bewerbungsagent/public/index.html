@@ -346,13 +346,10 @@
                     </div>
 
                     <div class="form-group">
-                          <label style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="privacyConsent" required style="appearance: auto; width: 18px; height: 18px;">
-                            <span style="font-weight: bold;">
-                              Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.
-                            </span>
-                          </label>
-                        </div>
+                      <div id="fakeCheckbox" style="display: inline-block; width: 18px; height: 18px; border: 2px solid #2c3e50; margin-right: 10px; cursor: pointer;"></div>
+                      <label for="fakeCheckbox" style="font-weight: bold; display: inline;">Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.</label>
+                    </div>
+
 
                    
                     <button type="submit" id="generateBtn">Bewerbung generieren</button>
@@ -384,6 +381,15 @@
             const loader = document.getElementById('loader');
             const errorAlert = document.getElementById('errorAlert');
             const formContainer = document.querySelector('.form-container');
+
+            let privacyConsentGiven = false;
+            const fakeCheckbox = document.getElementById('fakeCheckbox');
+            
+            fakeCheckbox.addEventListener('click', () => {
+              privacyConsentGiven = !privacyConsentGiven;
+              fakeCheckbox.style.backgroundColor = privacyConsentGiven ? '#3498db' : 'transparent';
+            });
+
             
             applicationForm.addEventListener('submit', async function(e) {
                 const privacyConsent = document.getElementById('privacyConsent');
