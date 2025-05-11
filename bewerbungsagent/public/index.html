@@ -238,6 +238,11 @@
             margin-bottom: 20px;
             display: none;
         }
+        .alert {
+          margin-top: -10px;
+          margin-bottom: 20px;
+        }
+
         
         @media print {
             body * {
@@ -347,8 +352,15 @@
 
                     <div class="form-group">
                       <div id="fakeCheckbox" style="display: inline-block; width: 18px; height: 18px; border: 2px solid #2c3e50; margin-right: 10px; cursor: pointer;"></div>
-                      <label for="fakeCheckbox" style="font-weight: bold; display: inline;">Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.</label>
+                      <label for="fakeCheckbox" style="font-weight: bold; display: inline;">
+                        Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.
+                      </label>
                     </div>
+                    
+                    <!-- ✅ Nur einmal hier – direkt darunter -->
+                    <div id="errorAlert" class="alert"></div>
+                    
+                    <button type="submit" id="generateBtn">Bewerbung generieren</button>
 
 
                    
