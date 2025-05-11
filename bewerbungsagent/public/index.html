@@ -261,16 +261,34 @@
                 padding: 40px;
             }
         }
-                input[type="checkbox"] {
+        input[type="checkbox"] {
           margin-right: 8px;
         }
-                input[type="checkbox"] {
+        input[type="checkbox"] {
           display: inline-block;
           width: auto;
           transform: scale(1.2);
           margin-right: 8px;
         }
-
+        
+        #fakeCheckbox {
+          width: 18px;
+          height: 18px;
+          border: 2px solid #2c3e50;
+          cursor: pointer;
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 8px;
+        }
+        
+        #privacyError {
+          color: #721c24;
+          background-color: #f8d7da;
+          padding: 10px;
+          border-radius: 5px;
+          margin-top: 8px;
+          display: none;
+        }
     </style>
 </head>
 <body>
@@ -351,20 +369,14 @@
                     </div>
 
                     <div class="form-group">
-                      <!-- DSGVO + Fehlermeldung direkt darunter -->
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
-                      <div style="display: flex; align-items: center; gap: 10px;">
-                        <div id="fakeCheckbox" style="width: 18px; height: 18px; border: 2px solid #2c3e50; cursor: pointer;"></div>
-                        <label for="fakeCheckbox" style="font-weight: bold;">
-                          Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.
-                        </label>
-                      </div>
-                      <div id="errorAlert" class="alert" style="margin: 0;"></div>
+                        <div style="display: flex; align-items: center;">
+                            <div id="fakeCheckbox"></div>
+                            <label for="fakeCheckbox" style="display: inline; margin-left: 5px; cursor: pointer;">
+                                Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert.
+                            </label>
+                        </div>
+                        <div id="privacyError"></div>
                     </div>
-
-                    
-                    <!-- ✅ Nur einmal hier – direkt darunter -->
-                    <div id="errorAlert" class="alert"></div>
                     
                     <button type="submit" id="generateBtn">Bewerbung generieren</button>
                 </form>
@@ -395,31 +407,32 @@
             const loader = document.getElementById('loader');
             const errorAlert = document.getElementById('errorAlert');
             const formContainer = document.querySelector('.form-container');
+            const privacyError = document.getElementById('privacyError');
 
             let privacyConsentGiven = false;
             const fakeCheckbox = document.getElementById('fakeCheckbox');
             
-            fakeCheckbox.addEventListener('click', () => {
-              privacyConsentGiven = !privacyConsentGiven;
-              fakeCheckbox.style.backgroundColor = privacyConsentGiven ? '#3498db' : 'transparent';
+            fakeCheckbox.addEventListener('click', function() {
+                privacyConsentGiven = !privacyConsentGiven;
+                fakeCheckbox.style.backgroundColor = privacyConsentGiven ? '#3498db' : 'transparent';
+                if (privacyConsentGiven) {
+                    privacyError.style.display = 'none';
+                }
             });
 
             
             applicationForm.addEventListener('submit', async function(e) {
-            e.preventDefault(); // ✅ Seite nicht neu laden!
-        
-            if (!privacyConsentGiven) {
-                loader.style.display = 'none';
-                errorAlert.textContent = 'Bitte stimme der Datenschutzerklärung zu.';
-                errorAlert.style.display = 'block';
-                return;
-            }
-
-
-
-                e.preventDefault();
+                e.preventDefault(); // Seite nicht neu laden!
                 
+                // Prüfen ob DSGVO-Checkbox angehakt ist
+                if (!privacyConsentGiven) {
+                    privacyError.textContent = 'Bitte stimme der Datenschutzerklärung zu.';
+                    privacyError.style.display = 'block';
+                    return; // Abbrechen wenn keine Zustimmung gegeben wurde
+                }
+
                 errorAlert.style.display = 'none';
+                privacyError.style.display = 'none';
                 loader.style.display = 'block';
                 
                 const formData = new FormData(applicationForm);
@@ -489,6 +502,8 @@
                 formContainer.style.display = 'block';
                 resultContainer.style.display = 'none';
                 applicationForm.reset();
+                privacyConsentGiven = false;
+                fakeCheckbox.style.backgroundColor = 'transparent';
             });
         });
     </script>
