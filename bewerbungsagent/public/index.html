@@ -378,6 +378,14 @@
             const formContainer = document.querySelector('.form-container');
             
             applicationForm.addEventListener('submit', async function(e) {
+                const privacyConsent = document.getElementById('privacyConsent');
+                if (!privacyConsent.checked) {
+                    loader.style.display = 'none';
+                    errorAlert.textContent = 'Bitte stimme der Datenschutzerklärung zu, um fortzufahren.';
+                    errorAlert.style.display = 'block';
+                    return;
+                }
+
                 e.preventDefault();
                 
                 errorAlert.style.display = 'none';
