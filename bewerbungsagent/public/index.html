@@ -392,13 +392,13 @@
 
             
             applicationForm.addEventListener('submit', async function(e) {
-                const privacyConsent = document.getElementById('privacyConsent');
-                if (!privacyConsent.checked) {
-                    loader.style.display = 'none';
-                    errorAlert.textContent = 'Bitte stimme der Datenschutzerklärung zu, um fortzufahren.';
-                    errorAlert.style.display = 'block';
-                    return;
-                }
+                if (!privacyConsentGiven) {
+                loader.style.display = 'none';
+                errorAlert.textContent = 'Bitte stimme der Datenschutzerklärung zu.';
+                errorAlert.style.display = 'block';
+                return;
+            }
+
 
                 e.preventDefault();
                 
