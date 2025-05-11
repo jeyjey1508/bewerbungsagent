@@ -392,12 +392,15 @@
 
             
             applicationForm.addEventListener('submit', async function(e) {
-                if (!privacyConsentGiven) {
+            e.preventDefault(); // ✅ Seite nicht neu laden!
+        
+            if (!privacyConsentGiven) {
                 loader.style.display = 'none';
                 errorAlert.textContent = 'Bitte stimme der Datenschutzerklärung zu.';
                 errorAlert.style.display = 'block';
                 return;
             }
+
 
 
                 e.preventDefault();
