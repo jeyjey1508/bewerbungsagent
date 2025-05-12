@@ -58,34 +58,28 @@ app.post('/generate', async (req, res) => {
     }
 
     const prompt = `
-Erstelle ein Bewerbungsschreiben ${stylePrompt} nach DIN 5008:
+Erstelle ausschließlich den Bewerbungstext ab der Anrede bis zur Grußformel. 
+Kein Betreff, keine Adressen, kein Datum. Der Text soll dem deutschen DIN 5008 Standard folgen.
 
-Bewerber:
+Struktur:
+1. Anrede
+2. Einleitung
+3. Hauptteil
+4. Schluss
+5. Grußformel
+
+Schreibstil: ${stylePrompt}
+
+Infos zur bewerbenden Person:
 - Name: ${applicantName}
-- Kontakt: ${applicantContact}
 - Beruf: ${job}
 - Erfahrung: ${experience}
 - Stärken: ${strengths}
 - Ausbildung: ${education}
 - Sprachen: ${languages}
 - Motivation: ${motivation}
-
-Firma:
-- Name: ${companyName}
-- Adresse: ${companyAddress}
-- Kontakt: ${contactPerson}
-
-Struktur:
-1. Absender (rechts)
-2. Empfänger (links)
-3. Datum (rechts)
-4. Betreffzeile
-5. Anrede
-6. Einleitung
-7. Hauptteil
-8. Schluss
-9. Grußformel
 `;
+
 
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
