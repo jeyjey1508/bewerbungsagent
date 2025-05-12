@@ -45,16 +45,13 @@ app.post('/generate', async (req, res) => {
 
     const applicantName = `${firstName} ${lastName}`;
     const applicantContact = `${address}\n${email}\n${phone}`;
-    const companyName = "Musterfirma GmbH";
-    const companyAddress = "Musterstraße 123\n12345 Musterstadt";
-    const contactPerson = "Frau Müller";
 
     let stylePrompt = "";
     switch(style) {
-      case 'formal': stylePrompt = "im formellen, professionellen Stil"; break;
-      case 'creative': stylePrompt = "im kreativen, innovativen Stil mit originellen Formulierungen"; break;
-      case 'casual': stylePrompt = "im lockeren, persönlichen Stil, aber dennoch professionell"; break;
-      default: stylePrompt = "im formellen, professionellen Stil";
+      case 'formal': stylePrompt = "formellen, professionellen Stil"; break;
+      case 'creative': stylePrompt = "kreativen, originellen Stil"; break;
+      case 'casual': stylePrompt = "lockeren, persönlichen Stil – dennoch professionell"; break;
+      default: stylePrompt = "formellen, professionellen Stil";
     }
 
     const prompt = `
@@ -68,9 +65,9 @@ Struktur:
 4. Schluss
 5. Grußformel
 
-Schreibstil: ${stylePrompt}
+Der Stil soll dem folgenden entsprechen: ${stylePrompt}
 
-Infos zur bewerbenden Person:
+Bewerberinformationen:
 - Name: ${applicantName}
 - Beruf: ${job}
 - Erfahrung: ${experience}
@@ -79,7 +76,6 @@ Infos zur bewerbenden Person:
 - Sprachen: ${languages}
 - Motivation: ${motivation}
 `;
-
 
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
@@ -100,14 +96,11 @@ Infos zur bewerbenden Person:
       }
     );
 
+    const content = response?.data?.choices?.[0]?.message?.content;
+    if (!content) throw new Error("Keine Antwort von der KI erhalten.");
+
     const formattedApplication = `
       <div class="letterhead">
-        <div class="company-info">
-          ${companyName}<br>
-          ${companyAddress.replace('\n', '<br>')}
-          <br>
-          z.Hd. ${contactPerson}
-        </div>
         <div class="contact-info">
           ${applicantName}<br>
           ${applicantContact.replace(/\n/g, '<br>')}
@@ -115,14 +108,14 @@ Infos zur bewerbenden Person:
       </div>
       
       <div class="date">
-        Musterstadt, ${new Date().toLocaleDateString('de-DE')}
+        ${new Date().toLocaleDateString('de-DE')}
       </div>
       
       <div class="subject">
         <strong>Bewerbung als ${job}</strong>
       </div>
       
-      ${response.data.choices[0].message.content}
+      ${content}
       
       <div class="signature">
         ${applicantName}
