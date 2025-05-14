@@ -242,12 +242,12 @@
             <h1>Bewerbungsgenerator</h1>
             <p class="tagline">Erstelle professionelle Bewerbungsschreiben in wenigen Minuten</p>
         </header>
-        
+
         <form id="applicationForm">
             <!-- Persönliche Daten -->
             <div class="form-container">
                 <h2 class="section-title">Persönliche Daten</h2>
-                
+
                 <!-- Person -->
                 <div class="form-section">
                     <div class="subsection">
@@ -258,14 +258,12 @@
                                 <input type="text" id="firstName" name="firstName" required placeholder="Max">
                                 <div class="field-error">Bitte gib deinen Vornamen ein.</div>
                             </div>
-                            
                             <div class="form-group col-2">
                                 <label for="lastName">Nachname*</label>
                                 <input type="text" id="lastName" name="lastName" required placeholder="Mustermann">
                                 <div class="field-error">Bitte gib deinen Nachnamen ein.</div>
                             </div>
                         </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="age">Alter (optional)</label>
@@ -274,7 +272,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Kontakt -->
                 <div class="form-section">
                     <div class="subsection">
@@ -282,19 +280,18 @@
                         <div class="form-row">
                             <div class="form-group col-2">
                                 <label for="email">E-Mail*</label>
-                                <input type="email" id="email" name="email" required placeholder="max.mustermann@example.com">
+                                <input type="email" id="email" name="email" required placeholder="max@example.com">
                                 <div class="field-error">Bitte gib eine gültige E-Mail-Adresse ein.</div>
                             </div>
-                            
                             <div class="form-group col-2">
                                 <label for="phone">Telefonnummer*</label>
-                                <input type="tel" id="phone" name="phone" required placeholder="+49 123 45678910">
+                                <input type="tel" id="phone" name="phone" required placeholder="+49 123 4567890">
                                 <div class="field-error">Bitte gib eine gültige Telefonnummer ein.</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Adresse -->
                 <div class="form-section">
                     <div class="subsection">
@@ -302,180 +299,144 @@
                         <div class="form-row">
                             <div class="form-group col-3">
                                 <label for="street">Straße*</label>
-                                <input type="text" id="street" name="street" required placeholder="Musterstraße">
+                                <input type="text" id="street" name="street" required>
                                 <div class="field-error">Bitte gib eine Straße ein.</div>
                             </div>
-                            
                             <div class="form-group col-3">
                                 <label for="houseNumber">Hausnummer*</label>
-                                <input type="text" id="houseNumber" name="houseNumber" required placeholder="42a">
+                                <input type="text" id="houseNumber" name="houseNumber" required>
                                 <div class="field-error">Bitte gib eine Hausnummer ein.</div>
                             </div>
-                            
                             <div class="form-group col-3">
                                 <label for="zipCode">PLZ*</label>
-                                <input type="text" id="zipCode" name="zipCode" required placeholder="12345">
-                                <div class="field-error">Bitte gib eine gültige Postleitzahl ein.</div>
+                                <input type="text" id="zipCode" name="zipCode" required>
+                                <div class="field-error">Bitte gib eine gültige PLZ ein.</div>
                             </div>
                         </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="city">Ort*</label>
-                                <input type="text" id="city" name="city" required placeholder="Berlin">
+                                <input type="text" id="city" name="city" required>
                                 <div class="field-error">Bitte gib einen Ort ein.</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Qualifikationen & Motivation -->
                 <div class="form-section">
                     <div class="subsection">
                         <h3 class="subsection-title">Qualifikationen & Motivation</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="job">Beruf (gewünschte Position)*</label>
-                                <input type="text" id="job" name="job" required placeholder="Webentwickler/in">
-                                <div class="field-error">Bitte gib eine gewünschte Position ein.</div>
-                            </div>
+                        <div class="form-group">
+                            <label for="job">Gewünschte Position*</label>
+                            <input type="text" id="job" name="job" required>
+                            <div class="field-error">Bitte gib eine Position ein.</div>
                         </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="education">Ausbildung*</label>
-                                <textarea id="education" name="education" required placeholder="Bachelor of Science in Informatik, TU München, 2015-2020"></textarea>
-                                <div class="field-help">Führe deine Ausbildung, Studiengänge und relevante Kurse auf.</div>
-                                <div class="field-error">Bitte gib Informationen zu deiner Ausbildung an.</div>
-                            </div>
+                        <div class="form-group">
+                            <label for="education">Ausbildung*</label>
+                            <textarea id="education" name="education" required></textarea>
+                            <div class="field-error">Bitte gib deine Ausbildung ein.</div>
                         </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="experience">Berufserfahrung*</label>
-                                <textarea id="experience" name="experience" required placeholder="3 Jahre Erfahrung als Frontend-Entwickler bei XYZ GmbH"></textarea>
-                                <div class="field-help">Beschreibe deine bisherigen Stellen und wichtigsten Aufgaben.</div>
-                                <div class="field-error">Bitte gib Informationen zu deiner Berufserfahrung an.</div>
-                            </div>
+                        <div class="form-group">
+                            <label for="experience">Berufserfahrung*</label>
+                            <textarea id="experience" name="experience" required></textarea>
+                            <div class="field-error">Bitte gib deine Erfahrung ein.</div>
                         </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="strengths">Stärken & Fähigkeiten*</label>
-                                <textarea id="strengths" name="strengths" required placeholder="HTML, CSS, JavaScript, React, Teamarbeit, Projektmanagement"></textarea>
-                                <div class="field-help">Liste technische Fähigkeiten und Soft Skills auf.</div>
-                                <div class="field-error">Bitte gib Informationen zu deinen Stärken und Fähigkeiten an.</div>
-                            </div>
+                        <div class="form-group">
+                            <label for="strengths">Stärken & Fähigkeiten*</label>
+                            <textarea id="strengths" name="strengths" required></textarea>
+                            <div class="field-error">Bitte gib deine Stärken ein.</div>
                         </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="languages">Sprachkenntnisse*</label>
-                                <textarea id="languages" name="languages" required placeholder="Deutsch (Muttersprache), Englisch (C1), Französisch (B1)"></textarea>
-                                <div class="field-help">Gib deine Sprachkenntnisse mit Niveaustufen an (A1-C2).</div>
-                                <div class="field-error">Bitte gib Informationen zu deinen Sprachkenntnissen an.</div>
-                            </div>
+                        <div class="form-group">
+                            <label for="languages">Sprachkenntnisse*</label>
+                            <textarea id="languages" name="languages" required></textarea>
+                            <div class="field-error">Bitte gib deine Sprachkenntnisse ein.</div>
                         </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="motivation">Motivation*</label>
-                                <textarea id="motivation" name="motivation" required placeholder="Ich bewerbe mich für diese Position, weil..."></textarea>
-                                <div class="field-help">Warum bist du für diese Position geeignet und motiviert?</div>
-                                <div class="field-error">Bitte gib deine Motivation für die Bewerbung an.</div>
-                            </div>
+                        <div class="form-group">
+                            <label for="motivation">Motivation*</label>
+                            <textarea id="motivation" name="motivation" required></textarea>
+                            <div class="field-error">Bitte gib deine Motivation ein.</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Bewerbungsstil -->
                 <div class="form-section">
                     <div class="subsection">
                         <h3 class="subsection-title">Bewerbungsstil</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="style">Wähle einen Stil für deine Bewerbung*</label>
-                                <select id="style" name="style" required>
-                                    <option value="formal">Formell</option>
-                                    <option value="creative">Kreativ</option>
-                                    <option value="casual">Locker</option>
-                                </select>
-                                <div class="field-help">Der Stil beeinflusst die Sprache und den Aufbau deiner Bewerbung.</div>
-                            </div>
+                        <div class="form-group">
+                            <label for="style">Stil*</label>
+                            <select id="style" name="style" required>
+                                <option value="formal">Formell</option>
+                                <option value="creative">Kreativ</option>
+                                <option value="casual">Locker</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
-            
 
             <!-- Firmendaten -->
             <div class="form-container">
                 <h2 class="section-title">Firmendaten</h2>
-                
-                <!-- Unternehmen -->
                 <div class="form-section">
                     <div class="subsection">
                         <h3 class="subsection-title">Unternehmen</h3>
                         <div class="form-row">
                             <div class="form-group col-2">
                                 <label for="companyName">Firmenname*</label>
-                                <input type="text" id="companyName" name="companyName" required placeholder="Muster GmbH">
+                                <input type="text" id="companyName" name="companyName" required>
                                 <div class="field-error">Bitte gib einen Firmennamen ein.</div>
                             </div>
-                            
                             <div class="form-group col-2">
                                 <label for="contactPerson">Ansprechpartner (optional)</label>
-                                <input type="text" id="contactPerson" name="contactPerson" placeholder="Frau Schmidt">
+                                <input type="text" id="contactPerson" name="contactPerson">
                             </div>
                         </div>
-                        
                         <div class="form-row">
                             <div class="form-group col-3">
                                 <label for="companyStreet">Straße*</label>
-                                <input type="text" id="companyStreet" name="companyStreet" required placeholder="Firmenstraße">
+                                <input type="text" id="companyStreet" name="companyStreet" required>
                                 <div class="field-error">Bitte gib eine Straße ein.</div>
                             </div>
-                            
                             <div class="form-group col-3">
                                 <label for="companyHouseNumber">Hausnummer*</label>
-                                <input type="text" id="companyHouseNumber" name="companyHouseNumber" required placeholder="100">
+                                <input type="text" id="companyHouseNumber" name="companyHouseNumber" required>
                                 <div class="field-error">Bitte gib eine Hausnummer ein.</div>
                             </div>
-                            
                             <div class="form-group col-3">
                                 <label for="companyZipCode">PLZ*</label>
-                                <input type="text" id="companyZipCode" name="companyZipCode" required placeholder="54321">
-                                <div class="field-error">Bitte gib eine gültige Postleitzahl ein.</div>
+                                <input type="text" id="companyZipCode" name="companyZipCode" required>
+                                <div class="field-error">Bitte gib eine gültige PLZ ein.</div>
                             </div>
                         </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="companyCity">Ort*</label>
-                                <input type="text" id="companyCity" name="companyCity" required placeholder="München">
+                                <input type="text" id="companyCity" name="companyCity" required>
                                 <div class="field-error">Bitte gib einen Ort ein.</div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="form-section">
-                  <div class="form-group checkbox-group">
+                </div>
+            </div>
+
+            <!-- DSGVO + Button -->
+            <div class="form-section">
+                <div class="form-group checkbox-group">
                     <input type="checkbox" id="privacyConsent" name="privacyConsent" required>
                     <label for="privacyConsent">
-                      Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden.
-                      Die Daten werden nicht gespeichert oder an Dritte weitergegeben.
+                        Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden.
+                        Die Daten werden nicht gespeichert oder an Dritte weitergegeben.
                     </label>
                     <div id="privacyError" class="field-error" style="display: none;">
-                      Bitte stimme den Datenschutzbestimmungen zu.
+                        Bitte stimme den Datenschutzbestimmungen zu.
                     </div>
-                  </div>
-                
-                  <div class="btn-group">
+                </div>
+
+                <div class="btn-group">
                     <button type="submit" class="btn-primary">Bewerbung generieren</button>
                     <button type="reset" class="btn-secondary">Alle Eingaben löschen</button>
-                  </div>
-                </div>
-                    
                 </div>
             </div>
         </form>
