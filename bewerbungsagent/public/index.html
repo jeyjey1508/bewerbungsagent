@@ -220,6 +220,43 @@
         background-color: #6c7a7d;
     }
 
+    /* Verbesserte Checkbox-Styling */
+    .checkbox-container {
+        position: relative;
+        padding-bottom: 1.5rem;  /* Platz für Fehlermeldung */
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+        margin: var(--spacing-md) 0;
+        flex-wrap: wrap;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        width: auto;
+        min-width: 18px;
+        height: 18px;
+        transform: scale(1.2);
+        margin-top: 2px;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .checkbox-group label {
+        cursor: pointer;
+        user-select: none;
+        flex: 1;
+        margin-bottom: 0;
+    }
+
+    .checkbox-group .field-error {
+        position: absolute;
+        bottom: 0;
+        left: 25px;  /* Platz für Checkbox + Abstand */
+    }
+
     @media (max-width: 768px) {
         .form-group.col-2,
         .form-group.col-3 {
@@ -234,7 +271,7 @@
             width: 100%;
         }
     }
-</style>
+    </style>
 </head>
 <body>
     <div class="container">
@@ -463,12 +500,14 @@
                 <div class="form-section">
                     <div class="subsection">
                         <h3 class="subsection-title">Datenschutz</h3>
-                        <div class="form-group checkbox-group">
-                            <input type="checkbox" id="privacyConsent" name="privacyConsent" required>
-                            <label for="privacyConsent">
-                                Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden.
-                                Die Daten werden nicht gespeichert oder an Dritte weitergegeben.
-                            </label>
+                        <div class="checkbox-container">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="privacyConsent" name="privacyConsent" required>
+                                <label for="privacyConsent">
+                                    Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden.
+                                    Die Daten werden nicht gespeichert oder an Dritte weitergegeben.
+                                </label>
+                            </div>
                             <div class="field-error" id="privacyError">
                                 Bitte stimme den Datenschutzbestimmungen zu.
                             </div>
