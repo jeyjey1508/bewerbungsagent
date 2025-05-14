@@ -406,7 +406,24 @@
                     </div>
                 </div>
             </div>
+            <div class="form-section">
+              <div class="form-group checkbox-group">
+                <input type="checkbox" id="privacyConsent" name="privacyConsent" required>
+                <label for="privacyConsent">
+                  Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden.
+                  Die Daten werden nicht gespeichert oder an Dritte weitergegeben.
+                </label>
+                <div id="privacyError" class="field-error" style="display: none;">
+                  Bitte stimme den Datenschutzbestimmungen zu.
+                </div>
+              </div>
             
+              <div class="btn-group">
+                <button type="submit" class="btn-primary">Bewerbung generieren</button>
+                <button type="reset" class="btn-secondary">Alle Eingaben löschen</button>
+              </div>
+            </div>
+
             <!-- Firmendaten -->
             <div class="form-container">
                 <h2 class="section-title">Firmendaten</h2>
@@ -456,22 +473,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- DSGVO und Buttons -->
-            <div class="form-container">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="privacyConsent" name="privacyConsent" required>
-                    <label for="privacyConsent">
-                        Ich stimme zu, dass meine Angaben zur Erstellung einer Bewerbung verwendet werden. Die Daten werden nicht gespeichert oder an Dritte weitergegeben.
-                    </label>
-                </div>
-                <div class="field-error" id="privacyError">Bitte stimme den Datenschutzbestimmungen zu.</div>
-                
-                <div class="btn-group">
-                    <button type="submit" class="btn-primary">Bewerbung generieren</button>
-                    <button type="reset" class="btn-secondary">Alle Eingaben löschen</button>
                 </div>
             </div>
         </form>
