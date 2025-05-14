@@ -1,4 +1,4 @@
-// Hauptskript für den Bewerbungsgenerator
+// main.js Hauptskript für den Bewerbungsgenerator
 document.addEventListener('DOMContentLoaded', function() {
     // Hole DOM-Elemente
     const applicationForm = document.getElementById('applicationForm');
@@ -50,6 +50,9 @@ document.addEventListener('DOMContentLoaded', function() {
             formDataObj[key] = value;
         });
         
+        // Speichere zusätzlich den Checkbox-Status separat
+        formDataObj.privacyConsent = privacyConsent.checked;
+        
         localStorage.setItem('bewerbungsDaten', JSON.stringify(formDataObj));
     }
     
@@ -63,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (element && element.type !== 'checkbox') {
                     element.value = formData[key];
                 } else if (element && element.type === 'checkbox') {
-                    element.checked = formData[key] === 'on';
+                    element.checked = formData[key] === true;
                 }
             });
         }
@@ -86,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Prüfe alle required Felder
         applicationForm.querySelectorAll('[required]').forEach(field => {
-            if (!field.value.trim()) {
+            if (!field.value.trim() && field.type !== 'checkbox') {
                 isValid = false;
                 // Zeige die Fehlermeldung für dieses Feld an
                 const errorElement = field.nextElementSibling;
@@ -96,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Prüfe DSGVO Checkbox
+        // Prüfe DSGVO Checkbox explizit
         if (!privacyConsent.checked) {
             isValid = false;
             privacyError.style.display = 'block';
@@ -131,6 +134,9 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.forEach((value, key) => {
             formDataObj[key] = value;
         });
+        
+        // Stelle sicher, dass der DSGVO-Status richtig übermittelt wird
+        formDataObj.privacyConsent = privacyConsent.checked ? 'on' : 'off';
         
         // Formatiere Adressen für die API
         formDataObj.fullAddress = formatAddress(
@@ -282,6 +288,13 @@ document.addEventListener('DOMContentLoaded', function() {
         saveFormData();
     });
     
+    // Event-Listener speziell für die DSGVO-Checkbox
+    privacyConsent.addEventListener('change', function() {
+        if (this.checked) {
+            privacyError.style.display = 'none';
+        }
+    });
+    
     document.querySelector('button[type="reset"]').addEventListener('click', clearFormData);
     
     document.getElementById('downloadPdfButton').addEventListener('click', downloadPDF);
@@ -410,6 +423,40 @@ document.addEventListener('DOMContentLoaded', function() {
             height: var(--spacing-md);
         }
         
+        /* Verbesserte Checkbox-Styling */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+            flex-wrap: wrap;
+            position: relative;
+            padding-bottom: 1.5rem;  /* Platz für Fehlermeldung */
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            min-width: 18px;
+            height: 18px;
+            transform: scale(1.2);
+            margin-top: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .checkbox-group label {
+            cursor: pointer;
+            user-select: none;
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .checkbox-group .field-error {
+            position: absolute;
+            bottom: 0;
+            left: 25px;  /* Platz für Checkbox + Abstand */
+        }
+        
         @media print {
             body * {
                 visibility: hidden;
@@ -431,4 +478,3 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(additionalStyles);
 });
-
