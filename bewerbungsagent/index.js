@@ -138,7 +138,7 @@ Firmeninformationen:
       headers = {
         'Authorization': `Bearer ${API_KEY}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://bewerbungsgenerator.beispiel.de', // Ändere dies in deine Domain
+        'HTTP-Referer': 'https://bewerbungsagent.onrender.com', // Ändere dies in deine Domain
         'X-Title': 'Bewerbungsgenerator'
       };
     } else {
