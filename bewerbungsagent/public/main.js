@@ -423,40 +423,6 @@ document.addEventListener('DOMContentLoaded', function() {
             height: var(--spacing-md);
         }
         
-        /* Verbesserte Checkbox-Styling */
-        .checkbox-group {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--spacing-sm);
-            margin: var(--spacing-md) 0;
-            flex-wrap: wrap;
-            position: relative;
-            padding-bottom: 1.5rem;  /* Platz für Fehlermeldung */
-        }
-        
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            min-width: 18px;
-            height: 18px;
-            transform: scale(1.2);
-            margin-top: 2px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        
-        .checkbox-group label {
-            cursor: pointer;
-            user-select: none;
-            flex: 1;
-            margin-bottom: 0;
-        }
-        
-        .checkbox-group .field-error {
-            position: absolute;
-            bottom: 0;
-            left: 25px;  /* Platz für Checkbox + Abstand */
-        }
-        
         @media print {
             body * {
                 visibility: hidden;
@@ -478,3 +444,4 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(additionalStyles);
 });
+Claude
