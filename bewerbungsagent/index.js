@@ -1,3 +1,4 @@
+//index.js
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -47,13 +48,20 @@ app.post('/generate', async (req, res) => {
       privacyConsent
     } = req.body;
 
+    // Überprüfe DSGVO-Zustimmung explizit
+    if (!privacyConsent || privacyConsent === 'off') {
+      return res.status(400).json({ 
+        error: 'Bitte stimme den Datenschutzbestimmungen zu.',
+        field: 'privacyConsent' 
+      });
+    }
+
     // Überprüfe Pflichtfelder
     const requiredFields = [
       'firstName', 'lastName', 'email', 'phone',
       'street', 'houseNumber', 'zipCode', 'city',
       'job', 'education', 'experience', 'strengths', 'languages', 'motivation',
-      'companyName', 'companyStreet', 'companyHouseNumber', 'companyZipCode', 'companyCity',
-      'privacyConsent'
+      'companyName', 'companyStreet', 'companyHouseNumber', 'companyZipCode', 'companyCity'
     ];
 
     for (const field of requiredFields) {
