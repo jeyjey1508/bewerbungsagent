@@ -156,25 +156,33 @@
         display: block;
     }
 
+    /* Verbessertes Checkbox-Styling */
+    .checkbox-container {
+        position: relative;
+        padding-bottom: 1.5rem;  /* Platz für Fehlermeldung */
+    }
+
     .checkbox-group {
         display: flex;
         align-items: flex-start;
         gap: var(--spacing-sm);
-        margin: var(--spacing-md) 0;
-        flex-wrap: wrap;
+        margin-bottom: var(--spacing-sm);
     }
 
     .checkbox-group input[type="checkbox"] {
         width: auto;
-        transform: scale(1.2);
-        margin-top: 2px;
+        min-width: 18px;
+        height: 18px;
         cursor: pointer;
+        flex-shrink: 0;
+        margin-top: 4px;
     }
 
     .checkbox-group label {
         cursor: pointer;
         user-select: none;
         flex: 1;
+        margin-bottom: 0;
     }
 
     .btn-group {
@@ -220,43 +228,6 @@
         background-color: #6c7a7d;
     }
 
-    /* Verbesserte Checkbox-Styling */
-    .checkbox-container {
-        position: relative;
-        padding-bottom: 1.5rem;  /* Platz für Fehlermeldung */
-    }
-
-    .checkbox-group {
-        display: flex;
-        align-items: flex-start;
-        gap: var(--spacing-sm);
-        margin: var(--spacing-md) 0;
-        flex-wrap: wrap;
-    }
-
-    .checkbox-group input[type="checkbox"] {
-        width: auto;
-        min-width: 18px;
-        height: 18px;
-        transform: scale(1.2);
-        margin-top: 2px;
-        cursor: pointer;
-        flex-shrink: 0;
-    }
-
-    .checkbox-group label {
-        cursor: pointer;
-        user-select: none;
-        flex: 1;
-        margin-bottom: 0;
-    }
-
-    .checkbox-group .field-error {
-        position: absolute;
-        bottom: 0;
-        left: 25px;  /* Platz für Checkbox + Abstand */
-    }
-
     @media (max-width: 768px) {
         .form-group.col-2,
         .form-group.col-3 {
@@ -269,6 +240,137 @@
 
         button {
             width: 100%;
+        }
+    }
+
+    /* Status- und Ergebnis-Container Styles */
+    .status-container {
+        margin-bottom: var(--spacing-lg);
+    }
+        
+    .loading-spinner {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: var(--spacing-lg);
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+        
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(52, 152, 219, 0.2);
+        border-top-color: var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: var(--spacing-md);
+    }
+        
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+        
+    .error-message {
+        display: none;
+        padding: var(--spacing-md);
+        background-color: #fee;
+        color: #c00;
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-md);
+    }
+        
+    .result-container {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+    }
+        
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+        
+    .result-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
+    }
+        
+    .application-preview {
+        background-color: #fff;
+        padding: var(--spacing-lg);
+        border: 1px solid var(--light-gray);
+        border-radius: var(--border-radius);
+        font-family: 'Times New Roman', Times, serif;
+        line-height: 1.5;
+    }
+        
+    /* Bewerbungs-Styling */
+    .application-letter {
+        font-family: 'Times New Roman', Times, serif;
+        line-height: 1.5;
+    }
+        
+    .sender-address {
+        text-align: right;
+        margin-bottom: var(--spacing-lg);
+    }
+        
+    .date {
+        text-align: right;
+        margin-bottom: var(--spacing-lg);
+    }
+        
+    .subject {
+        margin-bottom: var(--spacing-lg);
+    }
+        
+    .greeting {
+        margin-bottom: var(--spacing-md);
+    }
+        
+    .body p {
+        margin-bottom: var(--spacing-md);
+    }
+        
+    .closing {
+        margin-top: var(--spacing-lg);
+    }
+        
+    .signature {
+        margin-top: var(--spacing-lg);
+    }
+        
+    .spacer {
+        height: var(--spacing-md);
+    }
+
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+            
+        .application-preview, .application-preview * {
+            visibility: visible;
+        }
+            
+        .application-preview {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            padding: 40px;
+            border: none;
         }
     }
     </style>
@@ -521,6 +623,8 @@
                 </div>
             </div>
         </form>
+
+        <!-- Status- und Ergebnis-Container werden durch JavaScript hinzugefügt -->
     </div>
 
     <script src="main.js"></script>
