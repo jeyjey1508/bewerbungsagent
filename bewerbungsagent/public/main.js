@@ -312,6 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // CSS für die neuen Elemente hinzufügen
     const additionalStyles = document.createElement('style');
     additionalStyles.textContent = `
+        /* Status-Container Styles */
         .status-container {
             margin-bottom: var(--spacing-lg);
         }
@@ -422,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .spacer {
             height: var(--spacing-md);
         }
-        
+
         @media print {
             body * {
                 visibility: hidden;
