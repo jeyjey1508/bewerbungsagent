@@ -444,4 +444,3 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(additionalStyles);
 });
-Claude
