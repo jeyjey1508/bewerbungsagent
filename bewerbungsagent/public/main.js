@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             // API-Anfrage senden
-            const response = await fetch('/generate', {
+            const response = await fetch('https://bewerbungsagent.onrender.com/generate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
