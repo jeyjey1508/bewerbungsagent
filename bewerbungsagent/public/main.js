@@ -34,6 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div id="applicationPreview" class="application-preview"></div>
     `;
+    
+    // 📌 Sofort anhängen!
+    document.querySelector('.container').appendChild(resultContainer);
+
     document.querySelector('.container').appendChild(resultContainer);
     
     // Verstecke anfangs die Ergebnis-Container
