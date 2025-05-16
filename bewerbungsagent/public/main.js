@@ -35,9 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div id="applicationPreview" class="application-preview"></div>
     `;
     
-    // 📌 Sofort anhängen!
-    document.querySelector('.container').appendChild(resultContainer);
-
+    // 📌 Ergebnis-Container anhängen
     document.querySelector('.container').appendChild(resultContainer);
     
     // Verstecke anfangs die Ergebnis-Container
@@ -53,10 +51,10 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.forEach((value, key) => {
             formDataObj[key] = value;
         });
-        
+
         // Speichere zusätzlich den Checkbox-Status separat
         formDataObj.privacyConsent = privacyConsent.checked;
-        
+
         localStorage.setItem('bewerbungsDaten', JSON.stringify(formDataObj));
     }
     
