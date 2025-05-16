@@ -119,89 +119,75 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Bewerbung senden und generieren
     async function generateApplication() {
-        // Validiere das Formular
-        if (!validateForm()) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
-        }
-        
-        // Zeige Ladeanzeige
-        loadingSpinner.style.display = 'flex';
-        errorMessage.style.display = 'none';
-        
-        // Sammle alle Formulardaten
-        const formData = new FormData(applicationForm);
-        const formDataObj = {};
-        
-        formData.forEach((value, key) => {
-            formDataObj[key] = value;
-        });
-        
-        // Stelle sicher, dass der DSGVO-Status richtig übermittelt wird
-        formDataObj.privacyConsent = privacyConsent.checked ? 'on' : 'off';
-        
-        // Formatiere Adressen für die API
-        formDataObj.fullAddress = formatAddress(
-            formDataObj.street,
-            formDataObj.houseNumber,
-            formDataObj.zipCode,
-            formDataObj.city
-        );
-        
-        formDataObj.companyFullAddress = formatAddress(
-            formDataObj.companyStreet,
-            formDataObj.companyHouseNumber,
-            formDataObj.companyZipCode,
-            formDataObj.companyCity
-        );
-        
-        try {
-            // API-Anfrage senden
-            const response = await fetch('https://bewerbungsagent.onrender.com/generate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formDataObj)
-            });
-            
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Fehler bei der Bewerbungserstellung');
-            }
-            
-            const data = await response.json();
-            
-            // Zeige die generierte Bewerbung an
-            // Ergebnis-Container anhängen, falls nicht schon vorhanden
-            if (!document.getElementById('applicationPreview')) {
-                document.querySelector('.container').appendChild(resultContainer);
-            }
-            
-            // Dann HTML einsetzen
-            const preview = document.getElementById('applicationPreview');
-            if (preview) {
-                preview.innerHTML = data.application;
-            }
-
-            // Verstecke Ladeanimation und zeige Ergebnis
-            loadingSpinner.style.display = 'none';
-            applicationForm.parentElement.style.display = 'none';
-            resultContainer.style.display = 'block';
-            
-            // Scrolle zum Ergebnis
-            resultContainer.scrollIntoView({ behavior: 'smooth' });
-            
-        } catch (error) {
-            // Fehler anzeigen
-            loadingSpinner.style.display = 'none';
-            errorMessage.textContent = error.message;
-            errorMessage.style.display = 'block';
-            
-            // Scrolle zu Fehlermeldung
-            errorMessage.scrollIntoView({ behavior: 'smooth' });
-        }
+    if (!validateForm()) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
     }
+
+    loadingSpinner.style.display = 'flex';
+    errorMessage.style.display = 'none';
+
+    const formData = new FormData(applicationForm);
+    const formDataObj = {};
+
+    formData.forEach((value, key) => {
+        formDataObj[key] = value;
+    });
+
+    formDataObj.privacyConsent = privacyConsent.checked ? 'on' : 'off';
+
+    formDataObj.fullAddress = formatAddress(
+        formDataObj.street,
+        formDataObj.houseNumber,
+        formDataObj.zipCode,
+        formDataObj.city
+    );
+
+    formDataObj.companyFullAddress = formatAddress(
+        formDataObj.companyStreet,
+        formDataObj.companyHouseNumber,
+        formDataObj.companyZipCode,
+        formDataObj.companyCity
+    );
+
+    try {
+        const response = await fetch('/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formDataObj)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Fehler bei der Bewerbungserstellung');
+        }
+
+        const data = await response.json();
+
+        const preview = document.getElementById('applicationPreview');
+
+        if (!preview) {
+            console.error('Fehler: #applicationPreview fehlt in der Seite.');
+            throw new Error('Interner Fehler: Anzeigeelement fehlt.');
+        }
+
+        preview.innerHTML = data.application;
+
+        loadingSpinner.style.display = 'none';
+        applicationForm.parentElement.style.display = 'none';
+        resultContainer.style.display = 'block';
+        resultContainer.scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        console.error('Fehler beim Generieren:', error);
+        loadingSpinner.style.display = 'none';
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = 'block';
+        errorMessage.scrollIntoView({ behavior: 'smooth' });
+    }
+}
     
     // PDF Herunterladen
     async function downloadPDF() {
