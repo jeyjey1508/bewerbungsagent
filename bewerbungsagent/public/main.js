@@ -171,8 +171,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             // Zeige die generierte Bewerbung an
-            document.getElementById('applicationPreview').innerHTML = data.application;
+            // Ergebnis-Container anhängen, falls nicht schon vorhanden
+            if (!document.getElementById('applicationPreview')) {
+                document.querySelector('.container').appendChild(resultContainer);
+            }
             
+            // Dann HTML einsetzen
+            const preview = document.getElementById('applicationPreview');
+            if (preview) {
+                preview.innerHTML = data.application;
+            }
+
             // Verstecke Ladeanimation und zeige Ergebnis
             loadingSpinner.style.display = 'none';
             applicationForm.parentElement.style.display = 'none';
