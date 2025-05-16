@@ -375,6 +375,7 @@
     }
     </style>
 </head>
+    
 <body>
     <div class="container">
         <header>
@@ -624,9 +625,44 @@
             </div>
         </form>
 
-        <!-- Status- und Ergebnis-Container werden durch JavaScript hinzugefügt -->
-    </div>
+<!-- Status- und Ergebnis-Container werden durch JavaScript hinzugefügt -->
+</div>
 
-    <script src="main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const isBrave = (navigator.brave && typeof navigator.brave.isBrave === 'function');
+
+    if (isBrave) {
+      navigator.brave.isBrave().then(result => {
+        if (result) {
+          showWarning();
+        }
+      });
+    }
+
+    const checkbox = document.getElementById('privacyConsent');
+    if (!checkbox) {
+      showWarning();
+    }
+
+    function showWarning() {
+      const warning = document.createElement('div');
+      warning.style.backgroundColor = '#ffe4e1';
+      warning.style.border = '1px solid #cc0000';
+      warning.style.color = '#cc0000';
+      warning.style.padding = '12px';
+      warning.style.margin = '16px 0';
+      warning.style.borderRadius = '6px';
+      warning.style.fontWeight = 'bold';
+      warning.textContent = '⚠️ Hinweis: In manchen Browsern wie Brave oder mit aktiven Trackern-Blockern kann es dazu kommen, dass die DSGVO-Checkbox nicht angezeigt wird. Bitte deaktiviere Schutzmaßnahmen oder wechsle zu Chrome, Firefox oder Edge.';
+
+      const form = document.getElementById('applicationForm');
+      if (form) form.prepend(warning);
+    }
+  });
+</script>
+
+<script src="main.js"></script>
 </body>
 </html>
+
