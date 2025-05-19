@@ -266,4 +266,8 @@ function formatApplicationAsHTML(text) {
   
   return html;
 }
+app.listen(port, () => {
+  console.log(`✅ Server läuft auf Port ${port}`);
+});
+
 
