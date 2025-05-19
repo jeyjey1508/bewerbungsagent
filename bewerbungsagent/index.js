@@ -186,106 +186,84 @@ Firmeninformationen:
   }
 });
 
-// Hilfsfunktion zum Formatieren der Bewerbung als HTML
+// Verbesserte Formatierungsfunktion mit korrekter HTML-Struktur
 function formatApplicationAsHTML(text) {
   // Teile den Text in Zeilen auf
   const lines = text.split('\n');
-  let html = '';
-  let section = 'header';
+  let html = '<div class="application-letter">\n';
   
-  // Gehe durch jede Zeile und formatiere entsprechend
+  // Identifiziere die verschiedenen Abschnitte der Bewerbung
+  let currentSection = null;
+  let sectionContent = [];
+  
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
+    let newSection = null;
     
+    // Bestimme den Abschnitt basierend auf Zeileninhalt und Position
     if (line === '') {
-      // Leerzeile
-      html += '<div class="spacer"></div>\n';
+      // Leerzeile - füge einen Spacer hinzu, wenn wir uns in einem Abschnitt befinden
+      if (currentSection) {
+        sectionContent.push('<div class="spacer"></div>');
+      }
       continue;
     }
     
-    // Versuche, Abschnitte zu erkennen
-    if (i < 8 && (line.includes('Straße') || line.includes('Str.') || line.includes('@'))) {
-      if (section !== 'sender') {
-        html += '<div class="sender-address">\n';
-        section = 'sender';
-      }
-      html += `<p>${line}</p>\n`;
+    // Abschnittserkennung
+    if (i < 8 && (line.includes('Straße') || line.includes('Str.') || line.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/))) {
+      newSection = 'sender-address';
     }
-    else if (i < 15 && line.match(/^\d{5}/) || line.match(/^[A-Z][a-z]+,/)) {
-      if (section !== 'date') {
-        if (section === 'sender') {
-          html += '</div>\n';
-        }
-        html += '<div class="date">\n';
-        section = 'date';
-      }
-      html += `<p>${line}</p>\n`;
+    else if (i < 15 && (line.match(/^\d{1,2}\.\d{1,2}\.\d{4}/) || line.match(/^[A-Z][a-zäöüß]+,\s+\d{1,2}\.\s+[A-Za-zäöß]+\s+\d{4}/))) {
+      newSection = 'date';
     }
-    else if (i < 20 && (line.toLowerCase().includes('betr') || line.toLowerCase().includes('bewerbung'))) {
-      if (section !== 'subject') {
-        if (section === 'date') {
-          html += '</div>\n';
-        }
-        html += '<div class="subject">\n';
-        section = 'subject';
-      }
-      html += `<p><strong>${line}</strong></p>\n`;
+    else if (i < 20 && (line.toLowerCase().includes('betr') || line.toLowerCase().includes('bewerbung als'))) {
+      newSection = 'subject';
     }
     else if (i < 25 && (line.toLowerCase().includes('sehr geehrte') || line.toLowerCase().includes('hallo') || line.toLowerCase().includes('liebe'))) {
-      if (section !== 'greeting') {
-        if (section === 'subject') {
-          html += '</div>\n';
-        }
-        html += '<div class="greeting">\n';
-        section = 'greeting';
-      }
-      html += `<p>${line}</p>\n`;
+      newSection = 'greeting';
     }
     else if (i > lines.length - 8 && (line.toLowerCase().includes('freundliche') || line.toLowerCase().includes('grüße') || line.toLowerCase().includes('hochachtungsvoll'))) {
-      if (section !== 'closing') {
-        if (section === 'body' || section === 'greeting') {
-          html += '</div>\n';
-        }
-        html += '<div class="closing">\n';
-        section = 'closing';
-      }
-      html += `<p>${line}</p>\n`;
+      newSection = 'closing';
     }
     else if (i > lines.length - 5) {
-      if (section !== 'signature') {
-        if (section === 'closing') {
-          html += '</div>\n';
-        }
-        html += '<div class="signature">\n';
-        section = 'signature';
-      }
-      html += `<p>${line}</p>\n`;
+      newSection = 'signature';
     }
-    else {
-      if (section !== 'body' && i > 20) {
-        if (section === 'greeting') {
-          html += '</div>\n';
-        }
-        html += '<div class="body">\n';
-        section = 'body';
+    else if (i > 20) {
+      newSection = 'body';
+    }
+    
+    // Bei Abschnittswechsel, schließe den aktuellen Abschnitt ab und beginne einen neuen
+    if (newSection && newSection !== currentSection) {
+      // Schließe den vorherigen Abschnitt ab, wenn vorhanden
+      if (currentSection && sectionContent.length > 0) {
+        html += `<div class="${currentSection}">\n`;
+        html += sectionContent.join('\n');
+        html += `\n</div>\n`;
+        sectionContent = [];
       }
-      if (section === 'body') {
-        html += `<p>${line}</p>\n`;
-      } else {
-        html += `<p>${line}</p>\n`;
-      }
+      
+      // Setze den neuen Abschnitt
+      currentSection = newSection;
+    }
+    
+    // Füge die aktuelle Zeile mit entsprechendem Markup hinzu
+    if (currentSection === 'subject') {
+      sectionContent.push(`<p><strong>${line}</strong></p>`);
+    } else {
+      sectionContent.push(`<p>${line}</p>`);
     }
   }
   
-  // Schließe das letzte Element
-  if (section) {
-    html += '</div>\n';
+  // Schließe den letzten Abschnitt ab, wenn vorhanden
+  if (currentSection && sectionContent.length > 0) {
+    html += `<div class="${currentSection}">\n`;
+    html += sectionContent.join('\n');
+    html += `\n</div>\n`;
   }
   
-  return `<div class="application-letter">${html}</div>`;
+  // Schließe das Hauptelement
+  html += '</div>';
+  
+  return html;
 }
 
-// Server starten
-app.listen(port, () => {
-  console.log(`🚀 Bewerbungsgenerator läuft auf Port ${port}`);
-});
