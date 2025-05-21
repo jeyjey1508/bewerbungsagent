@@ -184,6 +184,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Setze den HTML-Inhalt
             applicationPreview.innerHTML = data.application;
+            console.log("HTML im Preview:", applicationPreview.innerHTML);
+
+            // Sichtbarkeit & Notfall-Style aktivieren:
+            applicationPreview.style.display = 'block';
+            applicationPreview.style.border = '2px solid red';
+            applicationPreview.style.minHeight = '200px';
+            applicationPreview.style.background = '#fff';
+            applicationPreview.style.color = '#000';
+
             console.log("HTML-Inhalt gesetzt:", data.application.substring(0, 50) + "...");
 
             // Alles anzeigen/verstecken
