@@ -182,39 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Interner Fehler: Vorschau-Element fehlt');
             }
 
-            // Setze den HTML-Inhalt
-            console.log("RAW data.application:", data.application);
-            
-            if (data.application && typeof data.application === 'string' && data.application.includes('<p>')) {
-                applicationPreview.innerHTML = data.application;
-            
-                // Sichtbarkeit & Style erzwingen
-                Object.assign(applicationPreview.style, {
-                    display: 'block',
-                    visibility: 'visible',
-                    color: '#000',
-                    background: '#fff',
-                    padding: '16px',
-                    border: '2px dashed green',
-                    minHeight: '200px'
-                });
-            
-                console.log("✅ Bewerbung erfolgreich eingesetzt.");
-            } else {
-                console.error("❌ HTML-Inhalt ist leer oder ungültig:", data.application);
-                applicationPreview.innerHTML = '<p style="color:red;">⚠️ Bewerbung konnte nicht angezeigt werden. Der Server lieferte keine verwertbaren Daten.</p>';
-                applicationPreview.style.display = 'block';
-            }
-            
-            console.log("HTML im Preview:", applicationPreview.innerHTML);
-
-            // Sichtbarkeit & Notfall-Style aktivieren:
-            applicationPreview.style.display = 'block';
-            applicationPreview.style.border = '2px solid red';
-            applicationPreview.style.minHeight = '200px';
-            applicationPreview.style.background = '#fff';
-            applicationPreview.style.color = '#000';
-
             console.log("HTML-Inhalt gesetzt:", data.application.substring(0, 50) + "...");
 
             // Alles anzeigen/verstecken
