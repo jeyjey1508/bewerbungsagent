@@ -176,15 +176,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             console.log("Antwort erhalten:", data);
 
-            // Teste lokale Mockdaten für die Entwicklung, wenn der Server nicht verfügbar ist
-            const appPreview = document.getElementById('applicationPreview');
-            if (!appPreview) {
+            // Überprüfe ob das Vorschau-Element existiert
+            if (!applicationPreview) {
                 console.error('Fehler: #applicationPreview Element nicht gefunden');
                 throw new Error('Interner Fehler: Vorschau-Element fehlt');
             }
 
-            // Setze HTML für die Vorschau
-            appPreview.innerHTML = data.application;
             console.log("HTML-Inhalt gesetzt:", data.application.substring(0, 50) + "...");
 
             // Alles anzeigen/verstecken
@@ -319,88 +316,11 @@ document.addEventListener('DOMContentLoaded', function() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
-    // Simuliere API für die lokale Entwicklung wenn kein Server vorhanden ist
-    async function createMockApplication() {
-        const firstName = document.getElementById('firstName').value || 'Max';
-        const lastName = document.getElementById('lastName').value || 'Mustermann';
-        const job = document.getElementById('job').value || 'Webentwickler';
-        
-        return {
-            application: `
-                <div class="application-letter">
-                    <div class="sender-address">
-                        <p>${firstName} ${lastName}</p>
-                        <p>${document.getElementById('street').value || 'Musterstraße'} ${document.getElementById('houseNumber').value || '42'}</p>
-                        <p>${document.getElementById('zipCode').value || '12345'} ${document.getElementById('city').value || 'Berlin'}</p>
-                        <p>${document.getElementById('email').value || 'max.mustermann@example.com'}</p>
-                        <p>${document.getElementById('phone').value || '+49 123 45678910'}</p>
-                    </div>
-                    <div class="date">
-                        <p>${new Date().toLocaleDateString('de-DE', {day: '2-digit', month: 'long', year: 'numeric'})}</p>
-                    </div>
-                    <div class="subject">
-                        <p><strong>Bewerbung als ${job}</strong></p>
-                    </div>
-                    <div class="greeting">
-                        <p>Sehr geehrte Damen und Herren,</p>
-                    </div>
-                    <div class="body">
-                        <p>hiermit bewerbe ich mich um die Position als ${job} in Ihrem Unternehmen.</p>
-                        <p>Meine Qualifikationen und Erfahrungen entsprechen Ihren Anforderungen:</p>
-                        <p>${document.getElementById('education').value || 'Meine Ausbildung'}</p>
-                        <p>${document.getElementById('experience').value || 'Meine Erfahrung'}</p>
-                        <p>Zu meinen Stärken zählen: ${document.getElementById('strengths').value || 'Meine Stärken'}</p>
-                        <p>${document.getElementById('motivation').value || 'Meine Motivation'}</p>
-                        <p>Ich freue mich auf ein persönliches Kennenlernen und stehe Ihnen für Rückfragen gerne zur Verfügung.</p>
-                    </div>
-                    <div class="closing">
-                        <p>Mit freundlichen Grüßen</p>
-                    </div>
-                    <div class="signature">
-                        <p>${firstName} ${lastName}</p>
-                    </div>
-                </div>
-            `,
-            rawText: "Mock Bewerbung Text"
-        };
-    }
-    
     // Event-Listener
-    applicationForm.addEventListener('submit', async function(e) {
+    applicationForm.addEventListener('submit', function(e) {
         e.preventDefault();
         console.log("Formular abgesendet");
-        
-        // Versuche, die Bewerbung zu generieren
-        try {
-            await generateApplication();
-        } catch (error) {
-            console.error("Fehler beim Generieren der Bewerbung:", error);
-            
-            // Wenn Server nicht verfügbar ist, verwende Mock-Daten
-            if (error.message && error.message.includes("fetch")) {
-                console.warn("Server nicht erreichbar, verwende Mock-Daten");
-                const mockData = await createMockApplication();
-                
-                // Setze die Vorschau mit Mock-Daten
-                const appPreview = document.getElementById('applicationPreview');
-                appPreview.innerHTML = mockData.application;
-                
-                // Verstecke Ladeanimation und Formulare
-                loadingSpinner.style.display = 'none';
-                applicationForm.parentElement.style.display = 'none';
-                
-                // Zeige Ergebnis
-                const resultContainerElement = document.getElementById('resultContainer');
-                resultContainerElement.style.display = 'block';
-                resultContainerElement.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                // Zeige Fehler
-                loadingSpinner.style.display = 'none';
-                errorMessage.textContent = error.message;
-                errorMessage.style.display = 'block';
-            }
-        }
-        
+        generateApplication();
         saveFormData();
     });
     
