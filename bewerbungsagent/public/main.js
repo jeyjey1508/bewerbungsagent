@@ -183,7 +183,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Setze den HTML-Inhalt
-            applicationPreview.innerHTML = data.application;
+            console.log("RAW data.application:", data.application);
+
+            if (data.application && typeof data.application === 'string' && data.application.includes('<p>')) {
+                applicationPreview.innerHTML = data.application;
+                applicationPreview.style.display = 'block';
+                applicationPreview.style.border = '2px solid red';
+                applicationPreview.style.minHeight = '200px';
+                applicationPreview.style.background = '#fff';
+                applicationPreview.style.color = '#000';
+                console.log("✅ Bewerbung erfolgreich eingesetzt.");
+            } else {
+                console.error("❌ HTML-Inhalt ist leer oder ungültig:", data.application);
+                applicationPreview.innerHTML = '<p style="color:red;">⚠️ Bewerbung konnte nicht angezeigt werden. Der Server lieferte keine verwertbaren Daten.</p>';
+                applicationPreview.style.display = 'block';
+            }
+
             console.log("HTML im Preview:", applicationPreview.innerHTML);
 
             // Sichtbarkeit & Notfall-Style aktivieren:
