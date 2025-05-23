@@ -1,11 +1,11 @@
 // main.js Hauptskript für den Bewerbungsgenerator
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Hole DOM-Elemente
     const applicationForm = document.getElementById('applicationForm');
     const privacyConsent = document.getElementById('privacyConsent');
     const privacyError = document.getElementById('privacyError');
     const container = document.querySelector('.container');
-    
+
     // Status-Elemente für Benutzer-Feedback
     const statusContainer = document.createElement('div');
     statusContainer.className = 'status-container';
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div id="errorMessage" class="error-message"></div>
     `;
     container.appendChild(statusContainer);
-    
+
     // Ergebnis-Container erstellen und anhängen
     const resultContainer = document.createElement('div');
     resultContainer.className = 'result-container';
@@ -35,21 +35,21 @@ document.addEventListener('DOMContentLoaded', function() {
         <div id="applicationPreview" class="application-preview"></div>
     `;
     container.appendChild(resultContainer);
-    
+
     // Elemente nach dem Anhängen im DOM abrufen
     const loadingSpinner = document.getElementById('loadingSpinner');
     const errorMessage = document.getElementById('errorMessage');
     const applicationPreview = document.getElementById('applicationPreview');
-    
+
     // Verstecke anfangs die Status-Container
     loadingSpinner.style.display = 'none';
     errorMessage.style.display = 'none';
-    
+
     // Lokale Speicherung der Formulardaten
     function saveFormData() {
         const formData = new FormData(applicationForm);
         const formDataObj = {};
-        
+
         formData.forEach((value, key) => {
             formDataObj[key] = value;
         });
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         localStorage.setItem('bewerbungsDaten', JSON.stringify(formDataObj));
     }
-    
+
     // Lade gespeicherte Daten beim Start
     function loadFormData() {
         const savedData = localStorage.getItem('bewerbungsDaten');
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    
+
     // Lösche gespeicherte Daten
     function clearFormData() {
         localStorage.removeItem('bewerbungsDaten');
@@ -86,11 +86,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         privacyError.style.display = 'none';
     }
-    
+
     // Formularvalidierung
     function validateForm() {
         let isValid = true;
-        
+
         // Prüfe alle required Felder
         applicationForm.querySelectorAll('[required]').forEach(field => {
             if (!field.value.trim() && field.type !== 'checkbox') {
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
-        
+
         // Prüfe DSGVO Checkbox explizit
         if (!privacyConsent.checked) {
             isValid = false;
@@ -110,22 +110,15 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             privacyError.style.display = 'none';
         }
-        
+
         return isValid;
     }
-    
-    // Generiere vollständige Adresse aus den Feldern
-    function formatAddress(street, houseNumber, zipCode, city) {
-        return `${street} ${houseNumber}\n${zipCode} ${city}`;
-    }
-    
+
+
     // Bewerbung senden und generieren
     async function generateApplication() {
-        // Debug-Ausgabe
-        console.log("Generiere Bewerbung...");
-        
+
         if (!validateForm()) {
-            console.log("Formular nicht valide");
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
@@ -144,22 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         formDataObj.privacyConsent = privacyConsent.checked ? 'on' : 'off';
 
-        formDataObj.fullAddress = formatAddress(
-            formDataObj.street,
-            formDataObj.houseNumber,
-            formDataObj.zipCode,
-            formDataObj.city
-        );
-
-        formDataObj.companyFullAddress = formatAddress(
-            formDataObj.companyStreet,
-            formDataObj.companyHouseNumber,
-            formDataObj.companyZipCode,
-            formDataObj.companyCity
-        );
 
         try {
-            console.log("Sende Anfrage an Server...");
             const response = await fetch('/generate', {
                 method: 'POST',
                 headers: {
@@ -174,28 +153,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const data = await response.json();
-            console.log("Antwort erhalten:", data);
 
-            // Überprüfe ob das Vorschau-Element existiert
-            if (!applicationPreview) {
-                console.error('Fehler: #applicationPreview Element nicht gefunden');
-                throw new Error('Interner Fehler: Vorschau-Element fehlt');
-            }
-
-            console.log("HTML-Inhalt gesetzt:", data.application.substring(0, 50) + "...");
 
             // Alles anzeigen/verstecken
             loadingSpinner.style.display = 'none';
-            applicationForm.parentElement.style.display = 'none';
-            
-            // Stellen sicher, dass resultContainer sichtbar ist und im DOM existiert
+
+
             const resultContainerElement = document.getElementById('resultContainer');
             if (resultContainerElement) {
-                resultContainerElement.style.display = 'block';
-                console.log("Ergebnis-Container sichtbar gemacht");
-                
-                // Scrolle zum Ergebnis
+                applicationPreview.innerHTML = data.application; // HTML-Inhalt setzen
+                resultContainerElement.style.display = 'block'; // Ergebnis-Container anzeigen
                 resultContainerElement.scrollIntoView({ behavior: 'smooth' });
+                applicationForm.parentElement.style.display = 'none'; // Verstecke das Formular
+
             } else {
                 console.error("Ergebnis-Container nicht gefunden!");
             }
@@ -208,9 +178,10 @@ document.addEventListener('DOMContentLoaded', function() {
             errorMessage.scrollIntoView({ behavior: 'smooth' });
         }
     }
-    
-    // PDF Herunterladen
-    async function downloadPDF() {
+
+
+            // PDF Herunterladen
+            async function downloadPDF() {
         try {
             // Lade jsPDF und html2canvas dynamisch, falls noch nicht geladen
             if (typeof jspdf === 'undefined') {
@@ -305,65 +276,62 @@ document.addEventListener('DOMContentLoaded', function() {
             copyButton.disabled = false;
         }, 2000);
     }
-    
+
+
     // Zurück zum Bearbeiten
     function backToEdit() {
-        const resultContainerElement = document.getElementById('resultContainer');
-        if (resultContainerElement) {
-            resultContainerElement.style.display = 'none';
-        }
-        applicationForm.parentElement.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      applicationForm.parentElement.style.display = 'block'; // Formular wieder anzeigen
+      const resultContainerElement = document.getElementById('resultContainer');
+      if (resultContainerElement) {
+          resultContainerElement.style.display = 'none';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
     // Event-Listener
-    applicationForm.addEventListener('submit', function(e) {
+    applicationForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        console.log("Formular abgesendet");
         generateApplication();
         saveFormData();
     });
-    
+
     // Event-Listener speziell für die DSGVO-Checkbox
-    privacyConsent.addEventListener('change', function() {
+    privacyConsent.addEventListener('change', function () {
         if (this.checked) {
             privacyError.style.display = 'none';
         }
     });
-    
+
     // Reset-Button
     const resetButton = document.querySelector('button[type="reset"]');
     if (resetButton) {
         resetButton.addEventListener('click', clearFormData);
     }
-    
+
+
     // Ergebnis-Aktionen
     const downloadPdfButton = document.getElementById('downloadPdfButton');
     if (downloadPdfButton) {
-        downloadPdfButton.addEventListener('click', downloadPDF);
+        downloadPdfButton.addEventListener('click', downloadPDF); // downloadPDF Funktion hier einfügen
     }
-    
+
     const copyTextButton = document.getElementById('copyTextButton');
     if (copyTextButton) {
-        copyTextButton.addEventListener('click', copyApplicationText);
+        copyTextButton.addEventListener('click', copyApplicationText); // copyApplicationText Funktion hier einfügen
     }
-    
+
     const editButton = document.getElementById('editButton');
     if (editButton) {
         editButton.addEventListener('click', backToEdit);
     }
-    
+
     // Auto-Speichern bei Eingaben
     applicationForm.querySelectorAll('input, textarea, select').forEach(field => {
         field.addEventListener('input', saveFormData);
     });
-    
+
     // Lade gespeicherte Daten beim Start
     loadFormData();
-    
-    // Debug-Ausgabe
-    console.log("Bewerbungsgenerator initialisiert. DOM geladen.");
-    console.log("Container vorhanden:", container ? true : false);
-    console.log("Ergebnis-Container angehängt:", document.getElementById('resultContainer') ? true : false);
-    console.log("Vorschau-Element vorhanden:", document.getElementById('applicationPreview') ? true : false);
+
+
 });
