@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
     container.appendChild(statusContainer);
 
-    // Ergebnis-Container erstellen und anhängen
+    // Ergebnis-Container erstellen und anhängen (Änderung hier: entferne die ID)
     const resultContainer = document.createElement('div');
     resultContainer.className = 'result-container';
-    resultContainer.id = 'resultContainer'; // Explizite ID hinzufügen
+    resultContainer.id = 'resultContainer'; // ID beibehalten
     resultContainer.style.display = 'none';
     resultContainer.innerHTML = `
         <div class="result-header">
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <button id="copyTextButton" class="btn-secondary">Text kopieren</button>
             </div>
         </div>
-        <div id="applicationPreview" class="application-preview"></div>
+        <div class="application-preview"></div> <--- ID entfernt!
     `;
     container.appendChild(resultContainer);
 
@@ -115,178 +115,192 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // Bewerbung senden und generieren
-    async function generateApplication() {
 
-        if (!validateForm()) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
-        }
 
-        // Zeige Ladeanzeige
-        loadingSpinner.style.display = 'flex';
-        errorMessage.style.display = 'none';
 
-        // Sammle Formulardaten
-        const formData = new FormData(applicationForm);
-        const formDataObj = {};
 
-        formData.forEach((value, key) => {
-            formDataObj[key] = value;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Bewerbung senden und generieren
+async function generateApplication() {
+    if (!validateForm()) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+    }
+
+    loadingSpinner.style.display = 'flex';
+    errorMessage.style.display = 'none';
+
+    const formData = new FormData(applicationForm);
+    const formDataObj = {};
+
+    formData.forEach((value, key) => {
+        formDataObj[key] = value;
+    });
+
+    formDataObj.privacyConsent = privacyConsent.checked ? 'on' : 'off';
+
+    try {
+        const response = await fetch('/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formDataObj)
         });
 
-        formDataObj.privacyConsent = privacyConsent.checked ? 'on' : 'off';
-
-
-        try {
-            const response = await fetch('/generate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formDataObj)
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Fehler bei der Bewerbungserstellung');
-            }
-
-            const data = await response.json();
-
-
-            // Alles anzeigen/verstecken
-            loadingSpinner.style.display = 'none';
-
-
-            const resultContainerElement = document.getElementById('resultContainer');
-            if (resultContainerElement) {
-                applicationPreview.innerHTML = data.application; // HTML-Inhalt setzen
-                resultContainerElement.style.display = 'block'; // Ergebnis-Container anzeigen
-                resultContainerElement.scrollIntoView({ behavior: 'smooth' });
-                applicationForm.parentElement.style.display = 'none'; // Verstecke das Formular
-
-            } else {
-                console.error("Ergebnis-Container nicht gefunden!");
-            }
-
-        } catch (error) {
-            console.error('Fehler beim Generieren:', error);
-            loadingSpinner.style.display = 'none';
-            errorMessage.textContent = error.message;
-            errorMessage.style.display = 'block';
-            errorMessage.scrollIntoView({ behavior: 'smooth' });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Fehler bei der Bewerbungserstellung');
         }
+
+        const data = await response.json();
+
+        const applicationPreviewInResult = resultContainer.querySelector('.application-preview');
+
+        if (!applicationPreviewInResult) {
+            console.error('Fehler: .application-preview Element im Ergebniscontainer nicht gefunden');
+            throw new Error('Interner Fehler: Vorschau-Element fehlt');
+        }
+
+        applicationPreviewInResult.innerHTML = data.application;
+
+        loadingSpinner.style.display = 'none';
+
+        const resultContainerElement = document.getElementById('resultContainer');
+        if (resultContainerElement) {
+            resultContainerElement.style.display = 'block';
+            resultContainerElement.scrollIntoView({ behavior: 'smooth' });
+            applicationForm.parentElement.style.display = 'none';
+        } else {
+            console.error("Ergebnis-Container nicht gefunden!");
+        }
+
+    } catch (error) {
+        console.error('Fehler beim Generieren:', error);
+        loadingSpinner.style.display = 'none';
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = 'block';
+        errorMessage.scrollIntoView({ behavior: 'smooth' });
     }
+}
 
+// PDF Herunterladen
+async function downloadPDF() {
+    try {
+        if (typeof jspdf === 'undefined') {
+            console.log("Lade jsPDF...");
+            const jsPDFScript = document.createElement('script');
+            jsPDFScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+            document.head.appendChild(jsPDFScript);
+            await new Promise(resolve => jsPDFScript.onload = resolve);
+        }
 
-            // PDF Herunterladen
-            async function downloadPDF() {
-        try {
-            // Lade jsPDF und html2canvas dynamisch, falls noch nicht geladen
-            if (typeof jspdf === 'undefined') {
-                console.log("Lade jsPDF...");
-                const jsPDFScript = document.createElement('script');
-                jsPDFScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-                document.head.appendChild(jsPDFScript);
-                
-                await new Promise(resolve => jsPDFScript.onload = resolve);
-            }
-            
-            if (typeof html2canvas === 'undefined') {
-                console.log("Lade html2canvas...");
-                const html2canvasScript = document.createElement('script');
-                html2canvasScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-                document.head.appendChild(html2canvasScript);
-                
-                await new Promise(resolve => html2canvasScript.onload = resolve);
-            }
-            
-            const element = document.getElementById('applicationPreview');
-            if (!element) {
-                throw new Error('Vorschau-Element nicht gefunden');
-            }
-            
-            const firstName = document.getElementById('firstName').value || 'Bewerbung';
-            const lastName = document.getElementById('lastName').value || '';
-            const fileName = `Bewerbung_${firstName}_${lastName}.pdf`;
-            
-            console.log("Erstelle PDF...");
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            
-            // Bewerbung in PDF umwandeln
-            const canvas = await html2canvas(element, {
-                scale: 2, // Höhere Qualität
-                useCORS: true,
-                logging: false
-            });
-            
-            const imgData = canvas.toDataURL('image/png');
-            const imgWidth = 210 - 40; // A4 Breite in mm (minus Ränder)
-            const pageHeight = 297;  // A4 Höhe in mm
-            const imgHeight = canvas.height * imgWidth / canvas.width;
-            let heightLeft = imgHeight;
-            
-            let position = 20; // Starte bei y = 20 mm für oberen Rand
-            
+        if (typeof html2canvas === 'undefined') {
+            console.log("Lade html2canvas...");
+            const html2canvasScript = document.createElement('script');
+            html2canvasScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+            document.head.appendChild(html2canvasScript);
+            await new Promise(resolve => html2canvasScript.onload = resolve);
+        }
+
+        const element = resultContainer.querySelector('.application-preview'); // Korrigiert
+        if (!element) {
+            throw new Error('Vorschau-Element im Ergebniscontainer nicht gefunden');
+        }
+
+        const firstName = document.getElementById('firstName').value || 'Bewerbung';
+        const lastName = document.getElementById('lastName').value || '';
+        const fileName = `Bewerbung_${firstName}_${lastName}.pdf`;
+
+        console.log("Erstelle PDF...");
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            logging: false
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 210 - 40;
+        const pageHeight = 297;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 20;
+
+        doc.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight - 40;
+
+        while (heightLeft > 0) {
+            position = 20 - heightLeft;
+            doc.addPage();
             doc.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight - 40; // 40 mm für oberen und unteren Rand
-            
-            // Füge weitere Seiten hinzu, falls nötig
-            while (heightLeft > 0) {
-                position = 20 - heightLeft;
-                doc.addPage();
-                doc.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight - 40;
-            }
-            
-            doc.save(fileName);
-            console.log("PDF erstellt und gespeichert");
-            
-        } catch (error) {
-            console.error('PDF-Erstellung fehlgeschlagen:', error);
-            alert('PDF-Erstellung fehlgeschlagen: ' + error.message);
+            heightLeft -= pageHeight - 40;
         }
+
+        doc.save(fileName);
+        console.log("PDF erstellt und gespeichert");
+
+    } catch (error) {
+        console.error('PDF-Erstellung fehlgeschlagen:', error);
+        alert('PDF-Erstellung fehlgeschlagen: ' + error.message);
     }
+}
+
+// Text in die Zwischenablage kopieren
+function copyApplicationText() {
+    const applicationText = resultContainer.querySelector('.application-preview'); // Korrigiert
+    if (!applicationText) {
+        console.error('Vorschau-Element im Ergebniscontainer nicht gefunden');
+        return;
+    }
+
+    const tempTextarea = document.createElement('textarea');
+    tempTextarea.value = applicationText.innerText;
+    document.body.appendChild(tempTextarea);
+    tempTextarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempTextarea);
+
+    const copyButton = document.getElementById('copyTextButton');
+    const originalText = copyButton.textContent;
+    copyButton.textContent = 'Kopiert!';
+    copyButton.disabled = true;
+
+    setTimeout(() => {
+        copyButton.textContent = originalText;
+        copyButton.disabled = false;
+    }, 2000);
+}
+
+// Zurück zum Bearbeiten
+function backToEdit() {
+    applicationForm.parentElement.style.display = 'block';
+    if (resultContainer) {
+        resultContainer.style.display = 'none';
+    }
+    const applicationPreviewInResult = resultContainer.querySelector('.application-preview');
+    if (applicationPreviewInResult) {
+        applicationPreviewInResult.innerHTML = '';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
     
-    // Text in die Zwischenablage kopieren
-    function copyApplicationText() {
-        const applicationText = document.getElementById('applicationPreview');
-        if (!applicationText) {
-            console.error('Vorschau-Element nicht gefunden');
-            return;
-        }
-        
-        const tempTextarea = document.createElement('textarea');
-        tempTextarea.value = applicationText.innerText;
-        document.body.appendChild(tempTextarea);
-        tempTextarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempTextarea);
-        
-        // Feedback anzeigen
-        const copyButton = document.getElementById('copyTextButton');
-        const originalText = copyButton.textContent;
-        copyButton.textContent = 'Kopiert!';
-        copyButton.disabled = true;
-        
-        setTimeout(() => {
-            copyButton.textContent = originalText;
-            copyButton.disabled = false;
-        }, 2000);
-    }
-
-
-    // Zurück zum Bearbeiten
-    function backToEdit() {
-      applicationForm.parentElement.style.display = 'block'; // Formular wieder anzeigen
-      const resultContainerElement = document.getElementById('resultContainer');
-      if (resultContainerElement) {
-          resultContainerElement.style.display = 'none';
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
     
     // Event-Listener
     applicationForm.addEventListener('submit', function (e) {
