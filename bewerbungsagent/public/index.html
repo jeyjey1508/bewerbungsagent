@@ -233,11 +233,11 @@
         .form-group.col-3 {
             flex: 1 0 100%;
         }
-
+    
         .btn-group {
             flex-direction: column;
         }
-
+    
         button {
             width: 100%;
         }
@@ -247,9 +247,9 @@
     .status-container {
         margin-bottom: var(--spacing-lg);
     }
-        
+    
     .loading-spinner {
-        display: none;
+        /* display: none;  Entfernt, wird per JS gesteuert */
         flex-direction: column;
         align-items: center;
         justify-content: center;
@@ -284,11 +284,18 @@
     }
         
     .result-container {
+        /* display: none; Entfernt, wird per JS gesteuert */ /* Wichtig: display: none entfernt */
         background-color: white;
         border-radius: var(--border-radius);
         box-shadow: var(--box-shadow);
         padding: var(--spacing-lg);
         margin-bottom: var(--spacing-lg);
+        /* Neue Eigenschaften für Sichtbarkeit */
+        opacity: 1 !important; /* oder einen anderen Wert, der nicht 0 ist */
+        visibility: visible !important;
+        position: relative !important; /* oder static, falls absolute Positionierung Probleme verursacht */
+        z-index: 1 !important; /*  Stelle sicher, dass es im Vordergrund ist */
+    
     }
         
     .result-header {
@@ -313,6 +320,12 @@
         border-radius: var(--border-radius);
         font-family: 'Times New Roman', Times, serif;
         line-height: 1.5;
+        /* Neue Eigenschaften für Sichtbarkeit */
+        display: block; /* oder inline-block, je nach Bedarf */
+        opacity: 1 !important; /* oder einen anderen Wert, der nicht 0 ist */
+        visibility: visible !important;
+        height: auto !important;
+        width: auto !important;
     }
         
     /* Bewerbungs-Styling */
